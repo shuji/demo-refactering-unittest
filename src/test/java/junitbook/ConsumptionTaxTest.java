@@ -3,26 +3,38 @@ package junitbook;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
-import org.junit.Test;
+import org.junit.experimental.theories.DataPoints;
+import org.junit.experimental.theories.Theories;
+import org.junit.experimental.theories.Theory;
+import org.junit.runner.RunWith;
 
+@RunWith(Theories.class)
 public class ConsumptionTaxTest {
 
-    @Test
-    public void 消費税が5パーセントのときapply_100は105を返す() throws Exception {
-        ConsumptionTax sut = new ConsumptionTax(5);
-        assertThat(sut.apply(100), is(105));
+    @DataPoints
+    public static Fixture[] FIXTURES = new Fixture[] {
+            new Fixture(5, 100, 105), 
+            new Fixture(5, 3000, 3150),
+            new Fixture(10, 50, 55), 
+            new Fixture(5, 50, 52),
+            new Fixture(3, 50, 51), };
+
+    @Theory
+    public void applyのテスト(Fixture f) throws Exception {
+        ConsumptionTax sut = new ConsumptionTax(f.rate);
+        assertThat(sut.apply(f.amount), is(f.expected));
     }
 
-    @Test
-    public void 消費税が5パーセントのときapply_3000は3150を返す() throws Exception {
-        ConsumptionTax sut = new ConsumptionTax(5);
-        assertThat(sut.apply(3000), is(3150));
+    static class Fixture {
+        int rate;
+        int amount;
+        int expected;
+
+        public Fixture(int rate, int amount, int expected) {
+            this.rate = rate;
+            this.amount = amount;
+            this.expected = expected;
+        }
     }
 
-    @Test
-    public void 消費税が10パーセントのときapply_50は55を返す() throws Exception {
-        ConsumptionTax sut = new ConsumptionTax(5);
-        assertThat(sut.apply(100), is(105));
-    }
-    
 }
