@@ -3,6 +3,7 @@ package junitbook;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -15,6 +16,7 @@ import org.junit.Test;
  * 消費税は5%とする
  * @author shuji.w6e
  */
+@Ignore("Cucumberによるテストに変更")
 public class ItemCartTest {
     
     @Test
