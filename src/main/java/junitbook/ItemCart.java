@@ -18,6 +18,7 @@ public class ItemCart {
 
     final Map<Item, Integer> items = new LinkedHashMap<>();
     boolean cashOnDelivery = false;
+    Coupon coupon = Coupon.NONE;
 
     public void add(Item newItem) {
         this.add(newItem, 1);
@@ -36,11 +37,34 @@ public class ItemCart {
         int total = 0;
         for (Entry<Item, Integer> entry : items.entrySet()) {
             Item item = entry.getKey();
-            total += item.getDiscountPrice() * entry.getValue();
+            if (item.getDiscount() != 0) {
+                total += item.getDiscountPrice() * entry.getValue();
+            } else if (coupon == Coupon.NONE) {
+                total += item.getPrice() * entry.getValue();
+            } else {
+                int p = item.getPrice() * (100 - coupon.rate) / 100;
+                total += p * entry.getValue();
+            }
         }
         if (total < 6000) total += 800;
         if (cashOnDelivery) total += 300;
         return total;
+    }
+
+    public boolean isCashOnDelivery() {
+        return cashOnDelivery;
+    }
+
+    public void setCashOnDelivery(boolean cashOnDelivery) {
+        this.cashOnDelivery = cashOnDelivery;
+    }
+
+    public Coupon getCoupon() {
+        return coupon;
+    }
+
+    public void setCoupon(Coupon coupon) {
+        this.coupon = coupon;
     }
 
 }
